@@ -522,6 +522,7 @@ const AddDoctor = () => {
                                             type="text"
                                             placeholder="Origin"
                                             ref={originRef}
+                                            className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
                                         />
                                     </Autocomplete>
                                 </div>
