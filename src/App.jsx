@@ -53,6 +53,7 @@ import Leadsapi from "../src/pages/Form/Leade Api/Leadsapi";
 import Doctor from "./pages/Doctor";
 import AddDoctor from "./components/AddDoctor";
 import AddHospital from "./components/forms/AddHospital";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // import PrivacyPolicy from "./pages/Form/WebAppMaster/PrivacyPolicy";
 
@@ -74,135 +75,178 @@ const App = () => {
                 )}
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
-                <Route exact path="/dashboard" element={<Analytics />} />
-                {/* <Route exact path="/hospitals" element={<Hospitals />} /> */}
-                <Route exact path="/hospitals" element={<Hotel />} />
-                <Route exact path="/doctors" element={<Doctor />} />
-                <Route
-                    exact
-                    path="/admin/addHospital"
-                    element={<AddHospital />}
-                />
-                <Route exact path="/admin/addDoctor" element={<AddDoctor />} />
-                <Route path="/installation" element={<HotelInstallation />} />
-                <Route
-                    exact
-                    path="/customerBooking"
-                    element={<CustomerBooking />}
-                />
-                <Route exact path="/agentBooking" element={<AgentBooking />} />
-                <Route exact path="/cities/addCity" element={<Addcity />} />
-                <Route exact path="/cities" element={<City />} />
-                <Route exact path="/customerList" element={<CustomerList />} />
-                <Route path="/Hotelmaster" element={<Hoteltypemaster />} />
-                <Route path="/roomtypemaster" element={<Roomtypemaster />} />
-                <Route exact path="/otamaster" element={<Otamaster />} />
-                <Route exact path="/otamaster/addOta" element={<AddOta />} />
-                <Route path="/deparmentmaster" element={<DeparmentMAster />} />
-                <Route
-                    path="/designationmaster"
-                    element={<DesignationMaster />}
-                />
-                <Route exact path="/addservices" element={<Addservices />} />
-                <Route
-                    path="/servicespackage"
-                    element={<AddServicePackages />}
-                />
-                <Route path="/amenities" element={<Amenities />} />
-                <Route path="/businessmanager" element={<BussinusManager />} />
-                <Route exact path="/swaguser" element={<Swaguser />} />
-                <Route path="/swaguser/Addswaguser" element={<Addswaguser />} />
-                <Route path="/agentuser" element={<Agentuser />} />
-                <Route
-                    path="/agentuser/addAgentuser"
-                    element={<AddAgentuser />}
-                />
-                <Route exact path="/hoteluser" element={<Hoteluser />} />
-                <Route
-                    path="/hoteluser/addHotelUser"
-                    element={<AddHoteluser />}
-                />
-                <Route path="/citysequences" element={<CitySequence />} />
-                <Route path="/web-master/promocodes" element={<Promocodes />} />
-                <Route
-                    exact
-                    path="/web-master/addpromocodes"
-                    element={<ADDpromocodes />}
-                />
-                <Route
-                    exact
-                    path="/web-master/upcomingProperty"
-                    element={<UpcomingProperty />}
-                />
-                <Route
-                    exact
-                    path="/web-master/business"
-                    element={<Business />}
-                />
-                <Route exact path="/web-master/team" element={<Team />} />
-                <Route
-                    exact
-                    path="/web-master/notifications"
-                    element={<Notifications />}
-                />
-                <Route
-                    exact
-                    path="/web-master/contactus"
-                    element={<ContactUs />}
-                />
-                <Route
-                    exact
-                    path="/web-master/subscribe"
-                    element={<Subscribe />}
-                />
-                <Route exact path="/viewvacancy" element={<Viewvacancy />} />
-                <Route
-                    exact
-                    path="/jobapplication"
-                    element={<Jobapplication />}
-                />
-                <Route
-                    exact
-                    path="/reports/onlinePayment"
-                    element={<OnlinePayment />}
-                />
-                <Route
-                    exact
-                    path="/reports/promocodeReport"
-                    element={<PromocodeReport />}
-                />
-                <Route
-                    exact
-                    path="/reports/commissionReport"
-                    element={<CommissionReport />}
-                />
-                <Route
-                    exact
-                    path="/reports/ratingReport"
-                    element={<RatingReport />}
-                />
-                <Route
-                    exact
-                    path="/reports/walletReport"
-                    element={<WalletReport />}
-                />
-                <Route
-                    exact
-                    path="/reports/agentReport"
-                    element={<AgentReport />}
-                />
-                <Route
-                    exact
-                    path="/reports/refferReport"
-                    element={<RefferReport />}
-                />
-                <Route
-                    exact
-                    path="/reports/btcReport"
-                    element={<BtcReport />}
-                />
-                <Route exact path="/leadsapi" element={<Leadsapi />} />
-
+                <Route element={<ProtectedRoute />}>
+                    <Route exact path="/dashboard" element={<Analytics />} />
+                    {/* <Route exact path="/hospitals" element={<Hospitals />} /> */}
+                    <Route exact path="/hospitals" element={<Hotel />} />
+                    <Route exact path="/doctors" element={<Doctor />} />
+                    <Route
+                        exact
+                        path="/admin/addHospital"
+                        element={<AddHospital />}
+                    />
+                    <Route
+                        exact
+                        path="/admin/addDoctor"
+                        element={<AddDoctor />}
+                    />
+                    <Route
+                        path="/installation"
+                        element={<HotelInstallation />}
+                    />
+                    <Route
+                        exact
+                        path="/customerBooking"
+                        element={<CustomerBooking />}
+                    />
+                    <Route
+                        exact
+                        path="/agentBooking"
+                        element={<AgentBooking />}
+                    />
+                    <Route exact path="/cities/addCity" element={<Addcity />} />
+                    <Route exact path="/cities" element={<City />} />
+                    <Route
+                        exact
+                        path="/customerList"
+                        element={<CustomerList />}
+                    />
+                    <Route path="/Hotelmaster" element={<Hoteltypemaster />} />
+                    <Route
+                        path="/roomtypemaster"
+                        element={<Roomtypemaster />}
+                    />
+                    <Route exact path="/otamaster" element={<Otamaster />} />
+                    <Route
+                        exact
+                        path="/otamaster/addOta"
+                        element={<AddOta />}
+                    />
+                    <Route
+                        path="/deparmentmaster"
+                        element={<DeparmentMAster />}
+                    />
+                    <Route
+                        path="/designationmaster"
+                        element={<DesignationMaster />}
+                    />
+                    <Route
+                        exact
+                        path="/addservices"
+                        element={<Addservices />}
+                    />
+                    <Route
+                        path="/servicespackage"
+                        element={<AddServicePackages />}
+                    />
+                    <Route path="/amenities" element={<Amenities />} />
+                    <Route
+                        path="/businessmanager"
+                        element={<BussinusManager />}
+                    />
+                    <Route exact path="/swaguser" element={<Swaguser />} />
+                    <Route
+                        path="/swaguser/Addswaguser"
+                        element={<Addswaguser />}
+                    />
+                    <Route path="/agentuser" element={<Agentuser />} />
+                    <Route
+                        path="/agentuser/addAgentuser"
+                        element={<AddAgentuser />}
+                    />
+                    <Route exact path="/hoteluser" element={<Hoteluser />} />
+                    <Route
+                        path="/hoteluser/addHotelUser"
+                        element={<AddHoteluser />}
+                    />
+                    <Route path="/citysequences" element={<CitySequence />} />
+                    <Route
+                        path="/web-master/promocodes"
+                        element={<Promocodes />}
+                    />
+                    <Route
+                        exact
+                        path="/web-master/addpromocodes"
+                        element={<ADDpromocodes />}
+                    />
+                    <Route
+                        exact
+                        path="/web-master/upcomingProperty"
+                        element={<UpcomingProperty />}
+                    />
+                    <Route
+                        exact
+                        path="/web-master/business"
+                        element={<Business />}
+                    />
+                    <Route exact path="/web-master/team" element={<Team />} />
+                    <Route
+                        exact
+                        path="/web-master/notifications"
+                        element={<Notifications />}
+                    />
+                    <Route
+                        exact
+                        path="/web-master/contactus"
+                        element={<ContactUs />}
+                    />
+                    <Route
+                        exact
+                        path="/web-master/subscribe"
+                        element={<Subscribe />}
+                    />
+                    <Route
+                        exact
+                        path="/viewvacancy"
+                        element={<Viewvacancy />}
+                    />
+                    <Route
+                        exact
+                        path="/jobapplication"
+                        element={<Jobapplication />}
+                    />
+                    <Route
+                        exact
+                        path="/reports/onlinePayment"
+                        element={<OnlinePayment />}
+                    />
+                    <Route
+                        exact
+                        path="/reports/promocodeReport"
+                        element={<PromocodeReport />}
+                    />
+                    <Route
+                        exact
+                        path="/reports/commissionReport"
+                        element={<CommissionReport />}
+                    />
+                    <Route
+                        exact
+                        path="/reports/ratingReport"
+                        element={<RatingReport />}
+                    />
+                    <Route
+                        exact
+                        path="/reports/walletReport"
+                        element={<WalletReport />}
+                    />
+                    <Route
+                        exact
+                        path="/reports/agentReport"
+                        element={<AgentReport />}
+                    />
+                    <Route
+                        exact
+                        path="/reports/refferReport"
+                        element={<RefferReport />}
+                    />
+                    <Route
+                        exact
+                        path="/reports/btcReport"
+                        element={<BtcReport />}
+                    />
+                    <Route exact path="/leadsapi" element={<Leadsapi />} />
+                </Route>
                 {/* <Route
                     exact
                     path="/web-master/privacyPolicy"

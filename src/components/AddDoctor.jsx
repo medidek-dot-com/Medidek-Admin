@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -8,7 +8,24 @@ import DefaultLayout from "../layout/DefaultLayout";
 // import DefaultLayout from "../../layout/DefaultLayout";
 import { useNavigate } from "react-router-dom";
 import { axiosClient } from "../Utils/axiosClient";
+import {
+    useJsApiLoader,
+    GoogleMap,
+    Marker,
+    Autocomplete,
+    DirectionsRenderer,
+} from "@react-google-maps/api";
 const AddDoctor = () => {
+    const { isLoaded } = useJsApiLoader({
+        googleMapsApiKey: "AIzaSyAqwfQ8_72yf13zLwiFI5c9ftGG1xNXC_0",
+        libraries: ["places"],
+    });
+    const [error, seterror] = useState(false);
+
+    const [map, setMap] = useState(/** @type google.maps.Map */ (null));
+    const [directionsResponse, setDirectionsResponse] = useState(null);
+    const [distance, setDistance] = useState("");
+    const [duration, setDuration] = useState("");
     // let [hotel, setHotel] = useState({
     //     Name_of_hotel_company: "",
     //     Website_hotel: "",
@@ -57,9 +74,8 @@ const AddDoctor = () => {
         location: "",
         landmark: "",
         enterFullAddress: "",
+        mapLink: "",
     });
-
-    console.log(inputValue);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -67,7 +83,6 @@ const AddDoctor = () => {
     };
 
     const navigate = useNavigate();
-    // let [image, setimage] = useState('');
     let config = {
         headers: {
             "content-type": "multipart/form-data",
@@ -75,8 +90,9 @@ const AddDoctor = () => {
     };
 
     const handleSubmit = async (e) => {
-        console.log("clicked");
         e.preventDefault();
+        setInputValue({ ...inputValue, mapLink: originRef?.current.value });
+        console.log(inputValue.mapLink);
         if (
             !inputValue.nameOfTheDoctor ||
             !inputValue.qulification ||
@@ -90,9 +106,10 @@ const AddDoctor = () => {
             !inputValue.acceptAppointments ||
             !inputValue.landmark ||
             !inputValue.enterFullAddress ||
-            !inputValue.location
+            !inputValue.location ||
+            !inputValue.mapLink
         ) {
-            setError(true);
+            seterror(true);
             return false;
         }
 
@@ -110,6 +127,7 @@ const AddDoctor = () => {
         formData.append("location", inputValue.location);
         formData.append("landmark", inputValue.landmark);
         formData.append("enterFullAddress", inputValue.enterFullAddress);
+        formData.append("mapLink", inputValue.mapLink);
         formData.append("image", inputImage);
 
         try {
@@ -130,6 +148,7 @@ const AddDoctor = () => {
                     location: "",
                     landmark: "",
                     enterFullAddress: "",
+                    mapLink: "",
                 });
             }
         } catch (error) {
@@ -137,32 +156,6 @@ const AddDoctor = () => {
             console.log(error);
         }
     };
-
-    // async function addHotel(e) {
-    //     e.preventDefault();
-    //     let result = await axios.post(
-    //         "https://swagstay-db-new.onrender.com/Addhotel",
-    //         input
-    //     );
-    //     if (result.status === 200) {
-    //         toast("Hotel Added Successfully!");
-    //     }
-    //     console.log(result);
-    //     navigate("/hotel");
-    // }
-
-    // async function cloudimg(e) {
-    //     let result = await axios.post(
-    //         "https://swagstay-db-new.onrender.com/uploadimage",
-    //         { image: e },
-    //         config
-    //     );
-    //     console.log(result.data.val);
-    //     // setHotel(() => {
-    //     //     return { ...hotel, image: result.data.val };
-    //     // });
-    // }
-    // console.log(hotel);
 
     const days = ["Royal", "Luxury"];
     const [hotelType, setHotelType] = useState([]);
@@ -217,47 +210,76 @@ const AddDoctor = () => {
         }
         setAllDays(selectedDays.length === 6); // Check if all individual days are selected
     };
+
+    /** @type React.MutableRefObject<HTMLInputElement> */
+    const originRef = useRef();
+    /** @type React.MutableRefObject<HTMLInputElement> */
+    const destiantionRef = useRef();
+
+    async function calculateRoute() {
+        if (
+            originRef.current.value === "" ||
+            destiantionRef.current.value === ""
+        ) {
+            return;
+        }
+        // eslint-disable-next-line no-undef
+        const directionsService = new google.maps.DirectionsService();
+        const results = await directionsService.route({
+            origin: originRef.current.value,
+            destination: destiantionRef.current.value,
+            // eslint-disable-next-line no-undef
+            travelMode: google.maps.TravelMode.DRIVING,
+        });
+        setDirectionsResponse(results);
+        setDistance(results.routes[0].legs[0].distance.text);
+        setDuration(results.routes[0].legs[0].duration.text);
+    }
+
     return (
         <>
-            <DefaultLayout>
-                <ToastContainer position="top-center"></ToastContainer>
-                <form onSubmit={handleSubmit}>
-                    <div className="mx-8 flex flex-col gap-3">
-                        <h1 className="dark:text-gray-50 text-4xl font-bold">
-                            Add Hospital
-                        </h1>
-                        <div className="">
-                            <input
-                                type="file"
-                                name="image"
-                                onChange={(e) => {
-                                    setInputImage(e.target.files[0]);
-                                }}
-                            />
-                        </div>
-                        {/* Hotel Company Info */}
-                        <div className="flex flex-col gap-3">
-                            <h5 className="dark:text-gray-50 text-lg font-bold underline">
-                                Hospital Information
-                            </h5>
-                            <div className="flex gap-2">
-                                <label
-                                    htmlFor="nameOfTheDoctor"
-                                    className="text-md dark:text-gray-50 w-[19.5rem]"
-                                >
-                                    Name of the Doctor
-                                </label>
+            {!isLoaded ? (
+                <h1>Loading.....</h1>
+            ) : (
+                <DefaultLayout>
+                    <ToastContainer position="top-center"></ToastContainer>
+                    <form onSubmit={handleSubmit}>
+                        <div className="mx-8 flex flex-col gap-3">
+                            <h1 className="dark:text-gray-50 text-4xl font-bold">
+                                Add Hospital
+                            </h1>
+                            <div className="">
                                 <input
-                                    type="text"
-                                    id="nameOfTheDoctor"
-                                    required
-                                    name="nameOfTheDoctor"
-                                    className="border-gray-300 focus:border-yellow-700 bg-gray-50 dark:text-gray-50 dark:bg-gray-600 h-8 w-full rounded border-2 p-1.5"
-                                    value={inputValue.nameOfTheDoctor}
-                                    onChange={handleChange}
+                                    type="file"
+                                    name="image"
+                                    onChange={(e) => {
+                                        setInputImage(e.target.files[0]);
+                                    }}
                                 />
                             </div>
-                            {/* <div className="flex justify-between">
+                            {/* Hotel Company Info */}
+                            <div className="flex flex-col gap-3">
+                                <h5 className="dark:text-gray-50 text-lg font-bold underline">
+                                    Hospital Information
+                                </h5>
+                                <div className="flex gap-2">
+                                    <label
+                                        htmlFor="nameOfTheDoctor"
+                                        className="text-md dark:text-gray-50 w-[19.5rem]"
+                                    >
+                                        Name of the Doctor
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="nameOfTheDoctor"
+                                        required
+                                        name="nameOfTheDoctor"
+                                        className="border-gray-300 focus:border-yellow-700 bg-gray-50 dark:text-gray-50 dark:bg-gray-600 h-8 w-full rounded border-2 p-1.5"
+                                        value={inputValue.nameOfTheDoctor}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                {/* <div className="flex justify-between">
                                 <div className="flex gap-2">
                                     <label
                                         for="authsignatoryname"
@@ -305,192 +327,208 @@ const AddDoctor = () => {
                                     />
                                 </div>
                             </div> */}
-                            <div className="flex justify-between">
-                                <div className="flex gap-2">
-                                    <label
-                                        htmlFor="qulification"
-                                        className="text-md dark:text-gray-50 w-60"
-                                    >
-                                        Qualification
-                                    </label>
-                                    <input
-                                        // onKeyDown={(e) => {
-                                        //     e.key === "-" && e.preventDefault();
-                                        // }}
-                                        // min="0"
-                                        onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
-                                        id="qulification"
-                                        required
-                                        name="qulification"
-                                        className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
-                                        value={inputValue.qulification}
-                                        onChange={handleChange}
-                                    />
+                                <div className="flex justify-between">
+                                    <div className="flex gap-2">
+                                        <label
+                                            htmlFor="qulification"
+                                            className="text-md dark:text-gray-50 w-60"
+                                        >
+                                            Qualification
+                                        </label>
+                                        <input
+                                            // onKeyDown={(e) => {
+                                            //     e.key === "-" && e.preventDefault();
+                                            // }}
+                                            // min="0"
+                                            onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+                                            id="qulification"
+                                            required
+                                            name="qulification"
+                                            className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
+                                            value={inputValue.qulification}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <label
+                                            htmlFor="speciality"
+                                            className="text-md dark:text-gray-50 w-60"
+                                        >
+                                            Speciality
+                                        </label>
+                                        <input
+                                            required
+                                            id="speciality"
+                                            min="0"
+                                            name="speciality"
+                                            // pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
+                                            className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
+                                            value={inputValue.speciality}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-between">
+                                    <div className="flex gap-2">
+                                        <label
+                                            htmlFor="yearOfExprience"
+                                            className="text-md dark:text-gray-50 w-60"
+                                        >
+                                            Years Of Experience
+                                        </label>
+                                        <input
+                                            type="number"
+                                            id="yearOfExprience"
+                                            required
+                                            name="yearOfExprience"
+                                            className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
+                                            value={inputValue.yearOfExprience}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <label
+                                            htmlFor="email"
+                                            className="text-md dark:text-gray-50 w-60"
+                                        >
+                                            Enter Email Id
+                                        </label>
+                                        <input
+                                            required
+                                            id="email"
+                                            type="email"
+                                            name="email"
+                                            className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
+                                            value={inputValue.email}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex justify-between">
+                                    <div className="flex gap-2">
+                                        <label
+                                            htmlFor="phone"
+                                            className="text-md dark:text-gray-50 w-60"
+                                        >
+                                            Enter Phone No
+                                        </label>
+                                        <input
+                                            id="phone"
+                                            type="number"
+                                            required
+                                            name="phone"
+                                            className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
+                                            value={inputValue.phone}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <label
+                                            htmlFor="connsultationFee"
+                                            className="text-md dark:text-gray-50 w-60"
+                                        >
+                                            Connsultation Fee
+                                        </label>
+                                        <input
+                                            type="number"
+                                            required
+                                            id="connsultationFee"
+                                            name="connsultationFee"
+                                            className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
+                                            value={inputValue.connsultationFee}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex justify-between">
+                                    <div className="flex gap-2">
+                                        <label
+                                            htmlFor="description"
+                                            className="text-md dark:text-gray-50 w-60"
+                                        >
+                                            Enter Description
+                                        </label>
+                                        <input
+                                            id="description"
+                                            required
+                                            name="description"
+                                            className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
+                                            value={inputValue.description}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <label
+                                            htmlFor="location"
+                                            className="text-md dark:text-gray-50 w-60"
+                                        >
+                                            Enter Location
+                                        </label>
+                                        <input
+                                            required
+                                            id="location"
+                                            name="location"
+                                            className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
+                                            value={inputValue.location}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex justify-between">
+                                    <div className="flex gap-2">
+                                        <label
+                                            htmlFor="landmark"
+                                            className="text-md dark:text-gray-50 w-60"
+                                        >
+                                            Landmark
+                                        </label>
+                                        <input
+                                            id="landmark"
+                                            required
+                                            name="landmark"
+                                            className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
+                                            value={inputValue.landmark}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <label
+                                            htmlFor="enterFullAddress"
+                                            className="text-md dark:text-gray-50 w-60"
+                                        >
+                                            Enter Full Address
+                                        </label>
+                                        <input
+                                            required
+                                            id="enterFullAddress"
+                                            name="enterFullAddress"
+                                            className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
+                                            value={inputValue.enterFullAddress}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
                                 </div>
                                 <div className="flex gap-2">
                                     <label
-                                        htmlFor="speciality"
+                                        htmlFor="mapLink"
                                         className="text-md dark:text-gray-50 w-60"
                                     >
-                                        Speciality
+                                        Map Link
                                     </label>
-                                    <input
-                                        required
-                                        id="speciality"
-                                        min="0"
-                                        name="speciality"
-                                        // pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
-                                        className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
-                                        value={inputValue.speciality}
-                                        onChange={handleChange}
-                                    />
+                                    <GoogleMap onLoad={(map) => setMap(map)} />
+                                    <Autocomplete>
+                                        <input
+                                            type="text"
+                                            placeholder="Origin"
+                                            ref={originRef}
+                                        />
+                                    </Autocomplete>
                                 </div>
                             </div>
 
-                            <div className="flex justify-between">
-                                <div className="flex gap-2">
-                                    <label
-                                        htmlFor="yearOfExprience"
-                                        className="text-md dark:text-gray-50 w-60"
-                                    >
-                                        Years Of Experience
-                                    </label>
-                                    <input
-                                        type="number"
-                                        id="yearOfExprience"
-                                        required
-                                        name="yearOfExprience"
-                                        className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
-                                        value={inputValue.yearOfExprience}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="flex gap-2">
-                                    <label
-                                        htmlFor="email"
-                                        className="text-md dark:text-gray-50 w-60"
-                                    >
-                                        Enter Email Id
-                                    </label>
-                                    <input
-                                        required
-                                        id="email"
-                                        type="email"
-                                        name="email"
-                                        className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
-                                        value={inputValue.email}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex justify-between">
-                                <div className="flex gap-2">
-                                    <label
-                                        htmlFor="phone"
-                                        className="text-md dark:text-gray-50 w-60"
-                                    >
-                                        Enter Phone No
-                                    </label>
-                                    <input
-                                        id="phone"
-                                        type="number"
-                                        required
-                                        name="phone"
-                                        className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
-                                        value={inputValue.phone}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="flex gap-2">
-                                    <label
-                                        htmlFor="connsultationFee"
-                                        className="text-md dark:text-gray-50 w-60"
-                                    >
-                                        Connsultation Fee
-                                    </label>
-                                    <input
-                                        type="number"
-                                        required
-                                        id="connsultationFee"
-                                        name="connsultationFee"
-                                        className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
-                                        value={inputValue.connsultationFee}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex justify-between">
-                                <div className="flex gap-2">
-                                    <label
-                                        htmlFor="description"
-                                        className="text-md dark:text-gray-50 w-60"
-                                    >
-                                        Enter Description
-                                    </label>
-                                    <input
-                                        id="description"
-                                        required
-                                        name="description"
-                                        className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
-                                        value={inputValue.description}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="flex gap-2">
-                                    <label
-                                        htmlFor="location"
-                                        className="text-md dark:text-gray-50 w-60"
-                                    >
-                                        Enter Location
-                                    </label>
-                                    <input
-                                        required
-                                        id="location"
-                                        name="location"
-                                        className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
-                                        value={inputValue.location}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex justify-between">
-                                <div className="flex gap-2">
-                                    <label
-                                        htmlFor="landmark"
-                                        className="text-md dark:text-gray-50 w-60"
-                                    >
-                                        Landmark
-                                    </label>
-                                    <input
-                                        id="landmark"
-                                        required
-                                        name="landmark"
-                                        className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
-                                        value={inputValue.landmark}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div className="flex gap-2">
-                                    <label
-                                        htmlFor="enterFullAddress"
-                                        className="text-md dark:text-gray-50 w-60"
-                                    >
-                                        Enter Full Address
-                                    </label>
-                                    <input
-                                        required
-                                        id="enterFullAddress"
-                                        name="enterFullAddress"
-                                        className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
-                                        value={inputValue.enterFullAddress}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Swag Info */}
-                        <div className="flex flex-col gap-3">
+                            {/* Swag Info */}
+                            {/* <div className="flex flex-col gap-3"> */}
                             {/* <h5 className="dark:text-gray-50 text-lg font-bold underline">
                                 Swag Information
                             </h5> */}
@@ -1062,17 +1100,18 @@ const AddDoctor = () => {
                                     }
                                 />
                             </div> */}
+                            {/* </div> */}
+                            <button
+                                type="submit"
+                                // style={{ backgroundColor: currentColor }}
+                                className="border-green-700 float-left w-fit rounded border-2 bg-black p-2 text-sm text-white"
+                            >
+                                Save & Continue
+                            </button>
                         </div>
-                        <button
-                            type="submit"
-                            // style={{ backgroundColor: currentColor }}
-                            className="border-green-700 float-left w-fit rounded border-2 bg-black p-2 text-sm text-white"
-                        >
-                            Save & Continue
-                        </button>
-                    </div>
-                </form>
-            </DefaultLayout>
+                    </form>
+                </DefaultLayout>
+            )}
         </>
     );
 };
