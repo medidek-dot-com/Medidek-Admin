@@ -304,7 +304,7 @@ const AddHospital = () => {
                                         //     e.key === "-" && e.preventDefault();
                                         // }}
                                         // min="0"
-                                        onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+                                        onKeyPress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
                                         id="location"
                                         required
                                         name="location"
@@ -461,7 +461,7 @@ const AddHospital = () => {
                                             e.key === "-" && e.preventDefault();
                                         }}
                                         min="0"
-                                        onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+                                        onKeyPress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
                                         required
                                         type="number"
                                         id="contactno"
@@ -611,7 +611,7 @@ const AddHospital = () => {
                                             e.key === "-" && e.preventDefault();
                                         }}
                                         min="0"
-                                        onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+                                        onKeyPress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
                                         name={hotel.Total_rooms}
                                         className="bg-gray-50 dark:text-gray-50 dark:bg-gray-600 border-gray-300 focus:border-yellow-700 h-8 rounded border-2 p-1.5"
                                         onChange={(e) =>
@@ -868,7 +868,7 @@ const AddHospital = () => {
                                             e.key === "-" && e.preventDefault();
                                         }}
                                         min="0"
-                                        onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+                                        onKeyPress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
                                         required
                                         type="number"
                                         id="zip"

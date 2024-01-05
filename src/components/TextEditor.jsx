@@ -7,7 +7,7 @@ import { EDITOR_JS_TOOLS } from '../constants';
 
 const ReactEditorJS = createReactEditorJS();
 
-class TextEditor extends Component {
+className TextEditor extends Component {
   render() {
     return (
       <ReactEditorJS

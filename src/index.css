@@ -46,16 +46,16 @@
 }
 
 .apexcharts-legend-text {
-    @apply !text-body dark:!text-bodydark;
+    @apply dark:!text-bodydark !text-body;
 }
 .apexcharts-text {
-    @apply !fill-body dark:!fill-bodydark;
+    @apply dark:!fill-bodydark !fill-body;
 }
 .apexcharts-xcrosshairs {
-    @apply !fill-stroke dark:!fill-strokedark;
+    @apply dark:!fill-strokedark !fill-stroke;
 }
 .apexcharts-gridline {
-    @apply !stroke-stroke dark:!stroke-strokedark;
+    @apply dark:!stroke-strokedark !stroke-stroke;
 }
 .apexcharts-series.apexcharts-pie-series path {
     @apply dark:!stroke-transparent;
@@ -94,14 +94,14 @@
     @apply dark:!border-b-boxdark;
 }
 .flatpickr-calendar {
-    @apply !p-6 dark:!bg-boxdark dark:!text-bodydark dark:!shadow-8 2xsm:!w-auto;
+    @apply dark:!bg-boxdark dark:!text-bodydark dark:!shadow-8 !p-6 2xsm:!w-auto;
 }
 .flatpickr-day {
     @apply dark:!text-bodydark;
 }
 .flatpickr-months .flatpickr-prev-month,
 .flatpickr-months .flatpickr-next-month {
-    @apply !top-7 dark:!fill-white dark:!text-white;
+    @apply dark:!fill-white dark:!text-white !top-7;
 }
 .flatpickr-months .flatpickr-prev-month.flatpickr-prev-month,
 .flatpickr-months .flatpickr-next-month.flatpickr-prev-month {
@@ -126,7 +126,7 @@ span.flatpickr-weekday,
 }
 
 .map-btn .jvm-zoom-btn {
-    @apply flex h-7.5 w-7.5 items-center justify-center rounded border border-stroke bg-white px-0 pt-0 pb-0.5 text-2xl leading-none text-body hover:border-primary hover:bg-primary hover:text-white dark:border-strokedark dark:text-bodydark dark:hover:border-primary dark:hover:text-white;
+    @apply dark:border-strokedark dark:text-bodydark dark:hover:border-primary dark:hover:text-white flex h-7.5 w-7.5 items-center justify-center rounded border border-stroke bg-white px-0 pt-0 pb-0.5 text-2xl leading-none text-body hover:border-primary hover:bg-primary hover:text-white;
 }
 .mapOne .jvm-zoom-btn {
     @apply left-auto top-auto bottom-0;
@@ -154,7 +154,7 @@ span.flatpickr-weekday,
     @apply line-through;
 }
 .taskCheckbox:checked ~ .box {
-    @apply border-primary bg-primary dark:border-primary;
+    @apply dark:border-primary border-primary bg-primary;
 }
 
 [x-cloak] {

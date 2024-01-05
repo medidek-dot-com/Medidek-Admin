@@ -22,32 +22,7 @@ import { axiosClient } from "../../Utils/axiosClient";
 import moment from "moment";
 
 const Analytics = () => {
-    // const [cardsData, setCardsData] = useState({
-    //     totalDoctors: "",
-    //     totalHospitals: "",
-    //     totalPatients: "",
-    //     totalAppointments: "",
-    //     todaysDoctors: "",
-    //     todaysHospitals: "",
-    //     todaysPatients: "",
-    //     todaysAppointments: "",
-    // });
-
     const [cardsData, setCardsData] = useState({});
-
-    // const currentDate = moment().format("DD - MM - YYYY");
-
-    // const yourDate = moment("2023-12-22"); // Change this date to the one you want
-
-    // Get the week of the year for the particular date
-    // const weekOfYear = yourDate.isoWeek();
-
-    // console.log(
-    //     `Week of the Year for ${yourDate.format("YYYY-MM-DD")}: ${weekOfYear}`
-    // );
-
-    // const endOfWeek = currentDate.clone().add(6, "days");
-    // console.log(endOfWeek.format("DD-MM-YYYY"));
 
     const columns = [
         {

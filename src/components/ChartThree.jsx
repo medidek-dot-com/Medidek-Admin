@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ReactApexChart from 'react-apexcharts'
 
-class ChartThree extends Component {
+className ChartThree extends Component {
   constructor(props) {
     super(props)
 

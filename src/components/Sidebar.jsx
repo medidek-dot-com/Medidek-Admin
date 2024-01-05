@@ -272,6 +272,22 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                             </li>
                             <li>
                                 <NavLink
+                                    to="/blogs"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                                        pathname.includes("blogs") &&
+                                        "bg-graydark dark:bg-meta-4"
+                                    }`}
+                                >
+                                    <img
+                                        src="/blog.png"
+                                        alt="img"
+                                        className="w-4"
+                                    />
+                                    Blogs
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
                                     to="/customerBooking"
                                     className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                                         pathname.includes("customerBooking") &&
@@ -856,7 +872,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-user-circle"
+                                                    className="icon icon-tabler icon-tabler-user-circle"
                                                     width="24"
                                                     height="24"
                                                     viewBox="0 0 24 24"
@@ -966,15 +982,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
-                                                    class="icon icon-tabler icon-tabler-chart-histogram"
+                                                    className="icon icon-tabler icon-tabler-chart-histogram"
                                                     width="24"
                                                     height="24"
                                                     viewBox="0 0 24 24"
-                                                    stroke-width="2"
+                                                    strokeWidth="2"
                                                     stroke="currentColor"
                                                     fill="none"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
                                                 >
                                                     <path
                                                         stroke="none"
@@ -1144,15 +1160,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="icon icon-tabler icon-tabler-circle-key"
+                                    className="icon icon-tabler icon-tabler-circle-key"
                                     width="24"
                                     height="24"
                                     viewBox="0 0 24 24"
-                                    stroke-width="2"
+                                    strokeWidth="2"
                                     stroke="currentColor"
                                     fill="none"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
                                 >
                                     <path
                                         stroke="none"

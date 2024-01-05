@@ -297,7 +297,7 @@ const AddGallery = () => {
 
 export default AddGallery;
 
-class ImageUploadPreviewComponent extends Component {
+className ImageUploadPreviewComponent extends Component {
   fileObj = [];
   fileArray = [];
 
